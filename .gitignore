@@ -1,20 +1,16 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# Virtual environments
+# Virtual Environment
 .venv/
 venv/
 
-# IDE/editor configs
+# IDE
 .vscode/
 .idea/
-*.sublime-project
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Shortcuts and temp files
+# Windows
 *.lnk
-*.tmp
+Thumbs.db
