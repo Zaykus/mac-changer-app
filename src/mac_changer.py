@@ -81,3 +81,19 @@ class MacChanger:
     def restart_adapter(self, net_cfg_id):
         """Restart the network adapter (disable then enable)."""
         self.disable_enable_adapter(net_cfg_id)
+
+    # Added for manual MAC address enable/disable (Value/Not Present)
+    def set_manual_mac_enabled(self, reg_path, enabled, mac_value=None):
+        """
+        Enable or disable manual MAC address.
+        If enabled, set to mac_value. If disabled, remove the value ("Not Present").
+        """
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, 0, winreg.KEY_SET_VALUE) as key:
+            if enabled and mac_value:
+                mac_no_colon = mac_value.replace(':', '').replace('-', '')
+                winreg.SetValueEx(key, "NetworkAddress", 0, winreg.REG_SZ, mac_no_colon)
+            else:
+                try:
+                    winreg.DeleteValue(key, "NetworkAddress")
+                except FileNotFoundError:
+                    pass
