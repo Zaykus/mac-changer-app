@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Shortcuts and temp files
+*.lnk
+*.tmp
