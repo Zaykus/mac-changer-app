@@ -1,11 +1,11 @@
 import os
 import json
-from typing import Dict, Any
+from typing import Dict, Any, Tuple, Union
 
 class Settings:
-    def __init__(self):
-        self.config_file = os.path.join(os.path.dirname(__file__), "config.json")
-        self.defaults = {
+    def __init__(self) -> None:
+        self.config_file: str = os.path.join(os.path.dirname(__file__), "config.json")
+        self.defaults: Dict[str, Any] = {
             "theme": "dark",
             "language": "en",
             "window_size": (540, 340),
@@ -14,7 +14,7 @@ class Settings:
             "enable_logging": True,
             "log_level": "INFO"
         }
-        self.settings = self.load_settings()
+        self.settings: Dict[str, Any] = self.load_settings()
 
     def load_settings(self) -> Dict[str, Any]:
         try:
@@ -32,5 +32,14 @@ class Settings:
         return self.settings.get(key, self.defaults.get(key))
 
     def set(self, key: str, value: Any) -> None:
-        self.settings[key] = value
-        self.save_settings()
+        if key in self.defaults:
+            self.settings[key] = value
+            self.save_settings()
+        else:
+            raise KeyError(f"Invalid setting key: {key}")
+
+    def validate_window_size(self, size: Union[Tuple[int, int], Any]) -> bool:
+        """Validate that the window size is a tuple of two positive integers."""
+        if isinstance(size, tuple) and len(size) == 2 and all(isinstance(i, int) and i > 0 for i in size):
+            return True
+        return False

@@ -2,9 +2,6 @@ import random
 import re
 import subprocess
 import winreg
-import socket
-import json
-from typing import Dict, List, Tuple, Optional
 
 class MacChanger:
     def get_adapters(self):
@@ -49,16 +46,8 @@ class MacChanger:
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, 0, winreg.KEY_SET_VALUE) as key:
             winreg.SetValueEx(key, "NetworkAddress", 0, winreg.REG_SZ, mac_no_colon)
 
-    def reset_mac_address(self, reg_path):
-        """Remove the NetworkAddress value from the registry (set to Not Present)."""
-        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, 0, winreg.KEY_SET_VALUE) as key:
-            try:
-                winreg.DeleteValue(key, "NetworkAddress")
-            except FileNotFoundError:
-                pass
-
     def disable_enable_adapter(self, net_cfg_id):
-        """Disable and enable the network adapter using PowerShell (Windows 10/11)."""
+        """Disable and enable the network adapter using PowerShell."""
         guid = net_cfg_id.strip('{}')
         # Disable adapter
         subprocess.run(
@@ -108,55 +97,3 @@ class MacChanger:
                     winreg.DeleteValue(key, "NetworkAddress")
                 except FileNotFoundError:
                     pass
-
-    def get_adapter_details(self, net_cfg_id: str) -> Dict[str, str]:
-        """Get detailed information about the network adapter."""
-        guid = net_cfg_id.strip('{}')
-        details = {}
-        
-        # Get adapter info using PowerShell
-        ps_command = (
-            "Get-NetAdapter | "
-            f"Where-Object {{$_.InterfaceGuid -eq '{{{guid}}}'}} | "
-            "Select-Object -Property InterfaceDescription, Status, LinkSpeed, MediaType, MacAddress, IPAddress | "
-            "ConvertTo-Json"
-        )
-        
-        try:
-            result = subprocess.run(
-                ["powershell", "-Command", ps_command],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            if result.stdout.strip():
-                adapter_info = json.loads(result.stdout)
-                details = {
-                    "Description": adapter_info.get("InterfaceDescription", "Unknown"),
-                    "Status": adapter_info.get("Status", "Unknown"),
-                    "Speed": adapter_info.get("LinkSpeed", "Unknown"),
-                    "Type": adapter_info.get("MediaType", "Unknown"),
-                    "MAC": adapter_info.get("MacAddress", "Unknown"),
-                    "IP": adapter_info.get("IPAddress", ["Unknown"])[0]
-                }
-        except Exception as e:
-            details = {
-                "Error": f"Failed to get adapter details: {str(e)}"
-            }
-        
-        return details
-
-    def save_original_mac(self, net_cfg_id: str, file_path: str = "original_macs.json") -> None:
-        """Save the original MAC address to a file."""
-        mac = self.get_current_mac(net_cfg_id)
-        if mac:
-            try:
-                with open(file_path, 'r') as f:
-                    macs = json.load(f)
-            except (FileNotFoundError, json.JSONDecodeError):
-                macs = {}
-            
-            macs[net_cfg_id] = mac
-            
-            with open(file_path, 'w') as f:
-                json.dump(macs, f, indent=2)

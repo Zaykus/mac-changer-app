@@ -23,6 +23,16 @@ class Logger:
         # Add handler to logger
         self.logger.addHandler(fh)
 
+    def set_log_level(self, level: str) -> None:
+        """Set the log level dynamically."""
+        level = level.upper()
+        if level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+            self.logger.setLevel(getattr(logging, level))
+            for handler in self.logger.handlers:
+                handler.setLevel(getattr(logging, level))
+        else:
+            self.logger.warning(f"Invalid log level: {level}")
+
     def info(self, message: str) -> None:
         self.logger.info(message)
 

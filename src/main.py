@@ -1,18 +1,20 @@
-# main.py
+class UserInterface:
+    def __init__(self, mac_changer):
+        self.mac_changer = mac_changer
+        self.create_interface()
 
-import sys
-from ui import UserInterface
-from mac_changer import MacChanger
+    def create_interface(self):
+        # Code to create the GUI elements goes here
+        pass
 
-def main():
-    mac_changer = MacChanger()
-    ui = UserInterface(mac_changer)
+    def display_options(self):
+        # Code to display options for MAC address configuration goes here
+        pass
 
-    try:
-        ui.run()
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        sys.exit(1)
+    def handle_user_input(self):
+        # Code to handle user input for changing MAC address goes here
+        pass
 
-if __name__ == "__main__":
-    main()
+    def run(self):
+        # Placeholder run method to avoid AttributeError
+        print("UserInterface is running. (GUI not implemented yet)")
