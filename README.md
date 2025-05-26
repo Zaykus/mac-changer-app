@@ -26,7 +26,7 @@ mac-changer-app
 
 ### Option 1: Download the Latest Release (Recommended)
 
-1.  Go to the [Releases page](https://github.com/Zaykus/mac-changer-app/releases/tag/MCA) of this repository.
+1.  Go to the [Releases page](https://github.com/Zaykus/mac-changer-app/releases/tag/MCA) .
 2.  Download the latest release package (e.g., `mac-changer-app-v1.0.zip`).
 3.  Extract the contents of the ZIP file to a directory of your choice.
 
